@@ -2,25 +2,25 @@
 
 import unittest
 
-from custom_components.bluetti_bt.bluetti_bt_lib.utils.device_builder import build_device
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac2a import AC2A
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac60 import AC60
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac60p import AC60P
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac70 import AC70
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac70p import AC70P
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac180 import AC180
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac180p import AC180P
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac200l import AC200L
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac200m import AC200M
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac200pl import AC200PL
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac300 import AC300
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ac500 import AC500
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.eb3a import EB3A
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ep500 import EP500
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ep500p import EP500P
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ep600 import EP600
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ep760 import EP760
-from custom_components.bluetti_bt.bluetti_bt_lib.devices.ep800 import EP800
+from custom_components.bluetti_b.bluetti_bt_lib.utils.device_builder import build_device
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac2a import AC2A
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac60 import AC60
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac60p import AC60P
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac70 import AC70
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac70p import AC70P
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac180 import AC180
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac180p import AC180P
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac200l import AC200L
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac200m import AC200M
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac200pl import AC200PL
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac300 import AC300
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ac500 import AC500
+from custom_components.bluetti_b.bluetti_bt_lib.devices.eb3a import EB3A
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ep500 import EP500
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ep500p import EP500P
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ep600 import EP600
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ep760 import EP760
+from custom_components.bluetti_b.bluetti_bt_lib.devices.ep800 import EP800
 
 
 class TestDeviceBuilder(unittest.TestCase):

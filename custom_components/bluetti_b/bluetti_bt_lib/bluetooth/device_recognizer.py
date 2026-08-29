@@ -5,7 +5,7 @@ import logging
 from typing import Any, Callable
 from bleak import BleakClient
 
-from custom_components.bluetti_bt.bluetti_bt_lib.utils.commands import (
+from custom_components.bluetti_b.bluetti_bt_lib.utils.commands import (
     ReadHoldingRegisters,
 )
 

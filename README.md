@@ -1,18 +1,30 @@
-# hassio-bluetti-bt
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
-[![Validate with hassfest](https://github.com/Patrick762/hassio-bluetti-bt/actions/workflows/hassfest_validation.yml/badge.svg)](https://github.com/Patrick762/hassio-bluetti-bt/actions/workflows/hassfest_validation.yml)
-[![HACS Action](https://github.com/Patrick762/hassio-bluetti-bt/actions/workflows/HACS.yml/badge.svg)](https://github.com/Patrick762/hassio-bluetti-bt/actions/workflows/HACS.yml)
+# bluettiB
 
-Bluetti Integration for Home Assistant
+Personal Home Assistant fork for Bluetti devices, based on the 0.1.6 codebase with a custom AC200MAX control fix.
+
+## Purpose
+
+This repo is a personal build for Home Assistant custom integration use.
+It starts from the working 0.1.6 implementation and keeps the AC200MAX control behavior targeted for reliable write-then-verify operation.
+
+## Version
+
+Current custom release: 0.1.6-mine
+
+## Notes
+
+- Original upstream compatibility target: `hassio-bluetti-bt` 0.1.6
+- Custom branch focus: AC200MAX stability and control verification
+- This project is intended for personal deployment and custom maintenance.
 
 ## Disclaimer
 This integration is provided without any warranty or support by Bluetti (unfortunately). I do not take responsibility for any problems it may cause in all cases. Use it at your own risk.
 
 ## Installation
 To install this integration, you first need [HACS](https://hacs.xyz/) installed.
-After the installation, you can use this button to install the integration:
+Add this repository as a custom integration in HACS, then install it from the repository list.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Patrick762&repository=hassio-bluetti-bt&category=integration)
+For a personal/private repo, use the repository URL directly in HACS rather than the standard public badge flow.
 
 ### Supported devices:
 

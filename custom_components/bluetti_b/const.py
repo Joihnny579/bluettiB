@@ -1,6 +1,6 @@
 """Constants for the Bluetti BT integration."""
 
-DOMAIN = "bluetti_bt"
+DOMAIN = "bluetti_b"
 MANUFACTURER = "Bluetti"
 
 CONF_OPTIONS = "options"

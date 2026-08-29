@@ -2,8 +2,8 @@
 
 import unittest
 
-from custom_components.bluetti_bt.bluetti_bt_lib.utils.commands import ReadHoldingRegisters
-from custom_components.bluetti_bt.bluetti_bt_lib.utils.struct import DeviceStruct
+from custom_components.bluetti_b.bluetti_bt_lib.utils.commands import ReadHoldingRegisters
+from custom_components.bluetti_b.bluetti_bt_lib.utils.struct import DeviceStruct
 
 class TestDeviceStruct(unittest.TestCase):
     def test_get_read_holding_registers(self):

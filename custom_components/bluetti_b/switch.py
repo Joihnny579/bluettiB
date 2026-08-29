@@ -26,6 +26,7 @@ from homeassistant.helpers.update_coordinator import (
 from .bluetti_bt_lib.base_devices.BluettiDevice import BluettiDevice
 from .bluetti_bt_lib.const import WRITE_UUID
 from .bluetti_bt_lib.field_attributes import FIELD_ATTRIBUTES, PACK_FIELD_ATTRIBUTES, FieldType
+from .bluetti_bt_lib.utils.commands import ReadHoldingRegisters
 from .bluetti_bt_lib.utils.device_builder import build_device
 
 from . import device_info as dev_info, get_unique_id
@@ -159,8 +160,51 @@ class BluettiSwitch(CoordinatorEntity, SwitchEntity):
         _LOGGER.debug("Turn off %s on %s", self._response_key, mac_loggable(self._address))
         await self.write_to_device(False)
 
+    async def _read_current_state(self) -> bool | None:
+        """Read the current value of the configured register."""
+        field = next(
+            (field for field in self._bluetti_device.struct.fields if field.name == self._response_key),
+            None,
+        )
+        if field is None:
+            _LOGGER.warning(
+                "No field definition found for %s on %s",
+                self._response_key,
+                mac_loggable(self._address),
+            )
+            return None
+
+        command = ReadHoldingRegisters(field.address, field.size)
+        try:
+            body = command.parse_response(
+                await self._coordinator.reader._async_send_command(command)
+            )
+            parsed = self._bluetti_device.parse(field.address, body)
+            value = parsed.get(self._response_key)
+            if value is None:
+                return None
+            return bool(value)
+        except (AttributeError, TypeError, ValueError) as err:
+            _LOGGER.warning(
+                "Could not read back %s on %s: %s",
+                self._response_key,
+                mac_loggable(self._address),
+                err,
+            )
+            return None
+
+    async def _wait_for_state(self, state: bool, retries: int = 4, delay: float = 1.0) -> bool:
+        """Verify the requested state on the same connection."""
+        for attempt in range(retries):
+            value = await self._read_current_state()
+            if value is not None and value == state:
+                return True
+            if attempt < retries - 1:
+                await asyncio.sleep(delay)
+        return False
+
     async def write_to_device(self, state: bool):
-        """Write to device."""
+        """Write to device and verify the result on the same connection."""
         command = self._bluetti_device.build_setter_command(self._response_key, state)
 
         async with self._polling_lock:
@@ -169,14 +213,23 @@ class BluettiSwitch(CoordinatorEntity, SwitchEntity):
                     if not self._client.is_connected:
                         await self._client.connect()
 
-                    # Send command
                     _LOGGER.debug("Requesting %s (%s,%s)", command, self._response_key, state)
                     await self._client.write_gatt_char(
                         WRITE_UUID, bytes(command)
                     )
 
-                    # Wait until device has changed value, otherwise reading register might reset it
-                    await asyncio.sleep(5)
+                    verified = await self._wait_for_state(state)
+                    if not verified:
+                        _LOGGER.warning(
+                            "Write for %s on %s did not verify to %s",
+                            self._response_key,
+                            mac_loggable(self._address),
+                            state,
+                        )
+
+                    self._attr_available = True
+                    self._attr_is_on = state
+                    self.async_write_ha_state()
 
             except TimeoutError:
                 _LOGGER.error("Timed out for device %s", mac_loggable(self._address))
@@ -185,8 +238,7 @@ class BluettiSwitch(CoordinatorEntity, SwitchEntity):
                 _LOGGER.error("Bleak error: %s", err)
                 return None
             finally:
-                # Disconnect if connection not persistant
                 if not self._coordinator.reader.persistent_conn:
                     await self._client.disconnect()
 
-        await self.coordinator.async_request_refresh()
+            return None
