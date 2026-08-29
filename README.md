@@ -1,6 +1,6 @@
 # bluettiB
 
-Personal Home Assistant fork for Bluetti devices, based on the 0.1.6 codebase with a custom AC200MAX control fix.
+Personal Home Assistant fork for Bluetti devices, based on the 0.1.6 codebase with a custom AC200MAX control fix. Display name in Home Assistant: BluettiB BT.
 
 ## Purpose
 
