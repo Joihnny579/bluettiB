@@ -13,6 +13,7 @@ Current custom release: 0.1.6-mine
 
 ## Notes
 
+- Based on the upstream project: `Patrick762/hassio-bluetti-bt`
 - Original upstream compatibility target: `hassio-bluetti-bt` 0.1.6
 - Custom branch focus: AC200MAX stability and control verification
 - This project is intended for personal deployment and custom maintenance.
