@@ -9,13 +9,16 @@ It starts from the working 0.1.6 implementation and keeps the AC200MAX control b
 
 ## Version
 
-Current custom release: 0.1.6-mine-1
+Current custom release: 0.1.0
+
+Based on the original upstream project by Patrick762: `hassio-bluetti-bt` version `0.1.6`
 
 ## Notes
 
-- Based on the upstream project: `Patrick762/hassio-bluetti-bt`
-- Original upstream compatibility target: `hassio-bluetti-bt` 0.1.6
-- Custom branch focus: AC200MAX stability and control verification
+- Original author: `Patrick762`
+- Original project: `hassio-bluetti-bt`
+- Version used as the starting point: `0.1.6`
+- This fork is a personal/custom build for AC200MAX reliability and control verification
 - This project is intended for personal deployment and custom maintenance.
 
 ## Disclaimer
