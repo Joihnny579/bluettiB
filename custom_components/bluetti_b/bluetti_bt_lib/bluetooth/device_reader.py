@@ -5,6 +5,7 @@ import logging
 from typing import Any, Callable, List, cast
 import async_timeout
 from bleak import BleakClient, BleakError
+from bleak_retry_connector import BleakClientWithServiceCache, establish_connection
 
 from ..base_devices.BluettiDevice import BluettiDevice
 from ..const import NOTIFY_UUID, RESPONSE_TIMEOUT, WRITE_UUID
@@ -17,14 +18,16 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceReader:
     def __init__(
         self,
-        bleak_client: BleakClient,
+        bleak_client: BleakClient | None,
         bluetti_device: BluettiDevice,
         future_builder_method: Callable[[], asyncio.Future[Any]],
         persistent_conn: bool = False,
         polling_timeout: int = 45,
         max_retries: int = 5,
+        device_getter: Callable[[], Any | None] | None = None,
     ) -> None:
         self.client = bleak_client
+        self.device_getter = device_getter
         self.bluetti_device = bluetti_device
         self.create_future = future_builder_method
         self.persistent_conn = persistent_conn
@@ -61,20 +64,8 @@ class DeviceReader:
         async with self.polling_lock:
             try:
                 async with async_timeout.timeout(self.polling_timeout):
-                    # Reconnect if not connected
-                    for attempt in range(1, self.max_retries + 1):
-                        try:
-                            if not self.client.is_connected:
-                                await self.client.connect()
-                            break
-                        except Exception as e:
-                            if attempt == self.max_retries:
-                                raise e # pass exception on max_retries attempt
-                            else:
-                                _LOGGER.warning(
-                                    f"Connect unsucessful (attempt {attempt}): {e}. Retrying..."
-                                )
-                                await asyncio.sleep(2)
+                    if not await self._ensure_client():
+                        return None
 
                     # Attach notifier if needed
                     if not self.has_notifier:
@@ -166,6 +157,49 @@ class DeviceReader:
                 return None
 
             return parsed_data
+
+    async def _ensure_client(self) -> bool:
+        """Ensure the BLE client is connected via HA's slot-managed path."""
+        if self.client is not None and self.client.is_connected:
+            return True
+
+        if self.device_getter is not None:
+            device = self.device_getter()
+            if device is None:
+                _LOGGER.warning("Bluetooth device unavailable for %s", self.bluetti_device.address)
+                return False
+
+            try:
+                self.client = await establish_connection(
+                    BleakClientWithServiceCache,
+                    device,
+                    device.name or "Bluetti",
+                    max_attempts=self.max_retries,
+                )
+                return True
+            except Exception as err:  # pragma: no cover - runtime BLE failure
+                _LOGGER.warning(
+                    "Connection establishment failed for %s: %s",
+                    self.bluetti_device.address,
+                    err,
+                )
+                return False
+
+        if self.client is None:
+            _LOGGER.warning("No device getter available for reader connection")
+            return False
+
+        try:
+            if not self.client.is_connected:
+                await self.client.connect()
+            return True
+        except Exception as err:  # pragma: no cover - legacy fallback for direct usage
+            _LOGGER.warning(
+                "Legacy connection fallback failed for %s: %s",
+                self.bluetti_device.address,
+                err,
+            )
+            return False
 
     async def _async_send_command(self, command: ReadHoldingRegisters) -> bytes:
         """Send command and return response"""

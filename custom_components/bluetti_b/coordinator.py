@@ -5,8 +5,6 @@ from __future__ import annotations
 from datetime import timedelta
 import logging
 
-from bleak import BleakClient
-
 from homeassistant.components import bluetooth
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
@@ -44,22 +42,19 @@ class PollingCoordinator(DataUpdateCoordinator):
 
         self.address = address
 
-        # Create client
-        self.logger.debug("Creating client")
-        device = bluetooth.async_ble_device_from_address(hass, address)
-        if device is None:
-            self.logger.error("Device %s not available", mac_loggable(address))
-            return None
-        client = BleakClient(device)
+        self.logger.debug("Preparing BLE device getter for %s", mac_loggable(address))
         bluetti_device = build_device(address, device_name)
 
         self.reader = DeviceReader(
-            client,
+            None,
             bluetti_device,
             self.hass.loop.create_future,
             persistent_conn=persistent_conn,
             polling_timeout=polling_timeout,
             max_retries=max_retries,
+            device_getter=lambda: bluetooth.async_ble_device_from_address(
+                hass, address, connectable=True
+            ),
         )
 
     async def _async_update_data(self):

@@ -9,7 +9,7 @@ It starts from the working 0.1.6 implementation and keeps the AC200MAX control b
 
 ## Version
 
-Current custom release: 0.1.0
+Current custom release: 0.1.1
 
 Based on the original upstream project by Patrick762: `hassio-bluetti-bt` version `0.1.6`
 
