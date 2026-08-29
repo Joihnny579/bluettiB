@@ -141,16 +141,20 @@ class DeviceReader:
                 _LOGGER.error("Bleak error: %s", err)
                 return None
             finally:
-                # Disconnect if connection not persistant
-                if not self.persistent_conn:
+                # Disconnect if connection not persistent
+                if not self.persistent_conn and self.client is not None:
                     if self.has_notifier:
                         try:
                             await self.client.stop_notify(NOTIFY_UUID)
-                        except:
+                        except Exception:
                             # Ignore errors here
                             pass
                         self.has_notifier = False
-                    await self.client.disconnect()
+                    try:
+                        await self.client.disconnect()
+                    except Exception:
+                        pass
+                    self.client = None
 
             # Check if dict is empty
             if not parsed_data:
