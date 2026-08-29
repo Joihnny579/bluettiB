@@ -9,7 +9,7 @@ It starts from the working 0.1.6 implementation and keeps the AC200MAX control b
 
 ## Version
 
-Current custom release: 0.1.6-mine
+Current custom release: 0.1.6-mine-1
 
 ## Notes
 
