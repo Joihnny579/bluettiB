@@ -11,6 +11,7 @@ It starts from the working 0.1.6 implementation and keeps the AC200MAX control b
 
 Version is managed in a single source file: `VERSION`.
 Run `python3 scripts/sync_version.py` after changing it to keep the manifest and README in sync.
+For a full release, use `./scripts/release.sh X.Y.Z` (or add `--dry-run` to preview the steps).
 
 Current custom release: 0.1.6
 
