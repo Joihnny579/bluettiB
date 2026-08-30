@@ -9,7 +9,10 @@ It starts from the working 0.1.6 implementation and keeps the AC200MAX control b
 
 ## Version
 
-Current custom release: 0.1.3
+Version is managed in a single source file: `VERSION`.
+Run `python3 scripts/sync_version.py` after changing it to keep the manifest and README in sync.
+
+Current custom release: 0.1.6
 
 Based on the original upstream project by Patrick762: `hassio-bluetti-bt` version `0.1.6`
 
