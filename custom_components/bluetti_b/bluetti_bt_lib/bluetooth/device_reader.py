@@ -62,11 +62,16 @@ class DeviceReader:
         parsed_data: dict = {}
 
         async with self.polling_lock:
+            # Establish the connection OUTSIDE the polling timeout.
+            # establish_connection() self-manages retries via max_attempts;
+            # cancelling it with async_timeout leaks a slot in HA's Bluetooth
+            # slot manager, which later surfaces as "No backend with an
+            # available connection slot". Never wrap it in a cancelling timeout.
+            if not await self._ensure_client():
+                return None
+
             try:
                 async with async_timeout.timeout(self.polling_timeout):
-                    if not await self._ensure_client():
-                        return None
-
                     # Attach notifier if needed
                     if not self.has_notifier:
                         await self.client.start_notify(
@@ -141,20 +146,25 @@ class DeviceReader:
                 _LOGGER.error("Bleak error: %s", err)
                 return None
             finally:
-                # Disconnect if connection not persistent
-                if not self.persistent_conn and self.client is not None:
-                    if self.has_notifier:
+                # Always release the slot cleanly.
+                if self.client is not None:
+                    if not self.persistent_conn:
+                        if self.has_notifier:
+                            try:
+                                await self.client.stop_notify(NOTIFY_UUID)
+                            except Exception:
+                                pass
+                            self.has_notifier = False
                         try:
-                            await self.client.stop_notify(NOTIFY_UUID)
+                            await self.client.disconnect()
                         except Exception:
-                            # Ignore errors here
                             pass
+                        self.client = None
+                    elif not self.client.is_connected:
+                        # Persistent link dropped mid-poll: drop the stale client
+                        # so the next cycle re-establishes cleanly.
                         self.has_notifier = False
-                    try:
-                        await self.client.disconnect()
-                    except Exception:
-                        pass
-                    self.client = None
+                        self.client = None
 
             # Check if dict is empty
             if not parsed_data:
