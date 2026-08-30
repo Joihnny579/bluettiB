@@ -24,7 +24,12 @@
     "abort": {
       "invalid_interval": "Invalid polling interval. Use 5 seconds or more",
       "invalid_timeout": "Invalid polling timeout. Use 1 second or more",
-      "invalid_retries": "Invalid max retries. Use 1 or more"
+      "invalid_retries": "Invalid max retries. Use 1 or more",
+      "invalid_retry_budget": "Retry budget is invalid. max_retries × 5 seconds must fit inside polling_timeout."
+    },
+    "data_description": {
+      "polling_timeout": "Remember: max retries × per-attempt time must fit inside the polling timeout.",
+      "max_retries": "Remember: max retries × per-attempt time must fit inside the polling timeout."
     }
   }
 }

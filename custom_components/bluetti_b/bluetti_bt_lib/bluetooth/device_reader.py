@@ -22,8 +22,8 @@ class DeviceReader:
         bluetti_device: BluettiDevice,
         future_builder_method: Callable[[], asyncio.Future[Any]],
         persistent_conn: bool = False,
-        polling_timeout: int = 45,
-        max_retries: int = 5,
+        polling_timeout: int = 60,
+        max_retries: int = 3,
         device_getter: Callable[[], Any | None] | None = None,
     ) -> None:
         self.client = bleak_client

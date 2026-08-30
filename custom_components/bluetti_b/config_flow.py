@@ -145,7 +145,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             # Validate update timeout
             if user_input[CONF_POLLING_TIMEOUT] < 1:
                 return self.async_abort(reason="invalid_timeout")
-            
+
+            # Fit the retry budget inside the timeout budget.
+            # A single BLE attempt is capped by RESPONSE_TIMEOUT (5s) in the reader.
+            if user_input[CONF_MAX_RETRIES] * 5 > user_input[CONF_POLLING_TIMEOUT]:
+                return self.async_abort(reason="invalid_retry_budget")
+
             # Validate max retries
             if user_input[CONF_MAX_RETRIES] < 1:
                 return self.async_abort(reason="invalid_retries")
@@ -188,15 +193,15 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     ): selector.BooleanSelector(),
                     vol.Required(
                         CONF_POLLING_INTERVAL,
-                        default=self.config_entry.data.get(CONF_POLLING_INTERVAL, 20),
+                        default=self.config_entry.data.get(CONF_POLLING_INTERVAL, 300),
                     ): int,
                     vol.Required(
                         CONF_POLLING_TIMEOUT,
-                        default=self.config_entry.data.get(CONF_POLLING_TIMEOUT, 45),
+                        default=self.config_entry.data.get(CONF_POLLING_TIMEOUT, 60),
                     ): int,
                     vol.Required(
                         CONF_MAX_RETRIES,
-                        default=self.config_entry.data.get(CONF_MAX_RETRIES, 5),
+                        default=self.config_entry.data.get(CONF_MAX_RETRIES, 3),
                     ): int,
                 }
             ),
