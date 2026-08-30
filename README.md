@@ -13,7 +13,7 @@ Version is managed in a single source file: `VERSION`.
 Run `python3 scripts/sync_version.py` after changing it to keep the manifest and README in sync.
 For a full release, use `./scripts/release.sh X.Y.Z` (or add `--dry-run` to preview the steps).
 
-Current custom release: 0.1.6
+Current custom release: 0.1.7
 
 Based on the original upstream project by Patrick762: `hassio-bluetti-bt` version `0.1.6`
 
