@@ -13,9 +13,21 @@ Version is managed in a single source file: `VERSION`.
 Run `python3 scripts/sync_version.py` after changing it to keep the manifest and README in sync.
 For a full release, use `./scripts/release.sh X.Y.Z` (or add `--dry-run` to preview the steps).
 
-Current custom release: 0.1.7
+Current custom release: 0.1.8
 
 Based on the original upstream project by Patrick762: `hassio-bluetti-bt` version `0.1.6`
+
+## Release rule
+
+Important: do not leave the repo ahead of its published release tag.
+
+Before shipping any fix or new behavior:
+- bump the number in `VERSION`
+- sync the manifest and README
+- cut and push a new git tag like `v0.1.9`
+- install HACS from the tag/release, not from a moving branch head
+
+The branch may be used for development, but the installed custom integration should always point to a tagged release. This avoids the HACS “commit SHA will be downloaded” drift that happens when a branch is newer than the published release.
 
 ## Notes
 
